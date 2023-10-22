@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.SPR1" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-<!--        <item name="colorPrimary">@color/my_dark_primary</item>-->
         <item name="materialButtonStyle">@style/MyButtonStyle.Dark</item>
+        <item name="android:backgroundTint">@color/dark_background</item>
     </style>
 
     <style name="MyButtonStyle.Dark" parent="Widget.AppCompat.Button">

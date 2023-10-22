@@ -10,4 +10,7 @@
     <string name="hello_second_fragment">Hello Second Fragment</string>
 
     <string name="mail">Mail</string>
+    <string name="count">Count</string>
+    <string name="toast">Toast</string>
+    <string name="random">Random</string>
 </resources>

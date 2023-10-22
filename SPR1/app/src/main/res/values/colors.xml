@@ -2,8 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light_background">#FFF069</color>
-    <color name="dark_background">#2E2E2E</color>
-    <color name="dark_button">#673AB7</color>
+    <color name="light_background">#FBC02D</color>
+    <color name="dark_background">#333230</color>
+    <color name="dark_button">#512DA8</color>
     <color name="light_button">#745D9E</color>
+    <color name="bars_color">#512DA8</color>
 </resources>
