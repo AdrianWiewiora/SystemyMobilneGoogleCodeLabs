@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SPR1" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+<!--        <item name="colorPrimary">@color/my_dark_primary</item>-->
+        <item name="materialButtonStyle">@style/MyButtonStyle.Dark</item>
+    </style>
+
+    <style name="MyButtonStyle.Dark" parent="Widget.AppCompat.Button">
+        <item name="android:backgroundTint">#E91E63</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>
