@@ -9,7 +9,7 @@
     <style name="Theme.SPR1" parent="Base.Theme.SPR1" />
 
     <style name="MyButtonStyle.Light" parent="Widget.AppCompat.Button">
-        <item name="backgroundColor">@color/dark_button</item>
+        <item name="backgroundTint">@color/light_button</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
