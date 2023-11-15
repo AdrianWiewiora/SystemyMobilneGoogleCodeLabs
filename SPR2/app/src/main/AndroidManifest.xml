@@ -37,4 +37,8 @@
         </activity>
     </application>
 
+    <queries>
+        <package android:name="com.google.android.apps.translate" />
+    </queries>
+
 </manifest>

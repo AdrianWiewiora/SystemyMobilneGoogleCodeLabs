@@ -15,15 +15,18 @@
  */
 package com.example.wordsapp
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 
@@ -76,21 +79,43 @@ class WordAdapter(private val letterId: String, context: Context) :
      * Replaces the content of an existing view with new data
      */
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-
         val item = filteredWords[position]
-        // Needed to call startActivity
         val context = holder.view.context
 
-        // Set the text of the WordViewHolder
         holder.button.text = item
 
         holder.button.setOnClickListener {
-            val queryUrl: Uri = Uri.parse("${DetailActivity.SEARCH_PREFIX}${item}")
-            val intent = Intent(Intent.ACTION_VIEW, queryUrl)
-            context.startActivity(intent)
-        }
+            // Tworzenie okna dialogowego
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Wybierz co chcesz zrobić z słowem")
 
+            // Dodawanie przycisków do okna dialogowego
+            builder.setPositiveButton("Otwórz w Google Chrome") { dialog, _ ->
+                // Kod do otwarcia linku w Google Chrome
+                val queryUrl: Uri = Uri.parse("${DetailActivity.SEARCH_PREFIX}${item}")
+                val intent = Intent(Intent.ACTION_VIEW, queryUrl)
+                context.startActivity(intent)
+                dialog.dismiss()
+            }
+
+            builder.setNegativeButton("Przetłumacz w Tłumaczu Google") { dialog, _ ->
+                // Kod do użycia Google Translate
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, item)
+                intent.setPackage("com.google.android.apps.translate")
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    Toast.makeText(context, "Brak odpowiednich aplikacji", Toast.LENGTH_SHORT).show()
+                }
+                dialog.dismiss()
+            }
+
+            builder.show()
+        }
     }
+
     // Setup custom accessibility delegate to set the text read with
     // an accessibility service
     companion object Accessibility : View.AccessibilityDelegate() {
