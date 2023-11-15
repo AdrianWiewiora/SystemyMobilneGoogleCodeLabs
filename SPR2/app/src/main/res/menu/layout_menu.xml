@@ -5,4 +5,9 @@
         android:title="@string/action_switch_layout"
         android:icon="@drawable/ic_linear_layout"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_reverse_order"
+        android:title="@string/action_reverse_order"
+        android:icon="@drawable/ic_descending"
+        app:showAsAction="ifRoom"/>
 </menu>

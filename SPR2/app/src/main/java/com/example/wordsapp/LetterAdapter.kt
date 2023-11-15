@@ -28,11 +28,11 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Adapter for the [RecyclerView] in [MainActivity].
  */
-class LetterAdapter :
+class LetterAdapter(var lettersList: List<Char>) :
     RecyclerView.Adapter<LetterAdapter.LetterViewHolder>() {
 
     // Generates a [CharRange] from 'A' to 'Z' and converts it to a list
-    private val list = ('A').rangeTo('Z').toList()
+    //private val list = ('A').rangeTo('Z').toList()
 
     /**
      * Provides a reference for the views needed to display items in your list.
@@ -42,7 +42,7 @@ class LetterAdapter :
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return lettersList.size
     }
 
     /**
@@ -61,7 +61,7 @@ class LetterAdapter :
      * Replaces the content of an existing view with new data
      */
     override fun onBindViewHolder(holder: LetterViewHolder, position: Int) {
-        val item = list.get(position)
+        val item = lettersList.get(position)
         holder.button.text = item.toString()
 
         holder.button.setOnClickListener {

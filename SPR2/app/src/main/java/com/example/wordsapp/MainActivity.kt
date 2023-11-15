@@ -25,12 +25,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wordsapp.databinding.ActivityMainBinding
 
+
 /**
  * Main Activity and entry point for the app. Displays a RecyclerView of letters.
  */
 class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private var isLinearLayoutManager = true
+    private var isAscending = true
+    private var lettersList = ('A').rangeTo('Z').toList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         recyclerView = binding.recyclerView
-        // Sets the LinearLayoutManager of the recyclerview
         chooseLayout()
+        chooseSort()
     }
 
     private fun chooseLayout() {
@@ -49,24 +52,39 @@ class MainActivity : AppCompatActivity() {
         } else {
             recyclerView.layoutManager = GridLayoutManager(this, 4)
         }
-        recyclerView.adapter = LetterAdapter()
+        recyclerView.adapter = LetterAdapter(lettersList)
     }
+
+    private fun chooseSort() {
+        recyclerView.adapter = LetterAdapter(lettersList)
+    }
+
 
     private fun setIcon(menuItem: MenuItem?) {
         if (menuItem == null)
             return
-        menuItem.icon =
-            if (isLinearLayoutManager)
-                ContextCompat.getDrawable(this, R.drawable.ic_grid_layout)
-            else ContextCompat.getDrawable(this, R.drawable.ic_linear_layout)
+        when (menuItem.itemId) {
+            R.id.action_switch_layout -> {
+                menuItem.icon = if (isLinearLayoutManager)
+                    ContextCompat.getDrawable(this, R.drawable.ic_grid_layout)
+                else ContextCompat.getDrawable(this, R.drawable.ic_linear_layout)
+            }
+            R.id.action_reverse_order -> {
+                menuItem.icon = if (isAscending)
+                    ContextCompat.getDrawable(this, R.drawable.ic_descending)
+                else ContextCompat.getDrawable(this, R.drawable.ic_ascending)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.layout_menu, menu)
 
         val layoutButton = menu?.findItem(R.id.action_switch_layout)
-        // Calls code to set the icon based on the LinearLayoutManager of the RecyclerView
         setIcon(layoutButton)
+
+        val reverseOrderButton = menu?.findItem(R.id.action_reverse_order)
+        setIcon(reverseOrderButton)
 
         return true
     }
@@ -80,6 +98,13 @@ class MainActivity : AppCompatActivity() {
                 chooseLayout()
                 setIcon(item)
 
+                return true
+            }
+            R.id.action_reverse_order -> {
+                isAscending = !isAscending
+                lettersList  = lettersList.reversed()
+                setIcon(item)
+                chooseSort()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
