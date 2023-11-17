@@ -29,30 +29,46 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * Adapter for the [RecyclerView] in [DetailActivity].
  */
 class WordAdapter(private val letterId: String, context: Context) :
     RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
-
-    private val filteredWords: List<String>
+    private var filteredWords: MutableList<String> = mutableListOf()
 
     init {
-        // Retrieve the list of words from res/values/arrays.xml
-        val words = context.resources.getStringArray(R.array.words).toList()
+        CoroutineScope(Dispatchers.Main).launch {
+            filteredWords = fetchWords(letterId).toMutableList()
+            notifyDataSetChanged()
+        }
+    }
 
-        filteredWords = words
-            // Returns items in a collection if the conditional clause is true,
-            // in this case if an item starts with the given letter,
-            // ignoring UPPERCASE or lowercase.
-            .filter { it.startsWith(letterId, ignoreCase = true) }
-            // Returns a collection that it has shuffled in place
-            .shuffled()
-            // Returns the first n items as a [List]
-            .take(5)
-            // Returns a sorted version of that [List]
-            .sorted()
+    suspend fun fetchWords(letterId: String): List<String> = withContext(Dispatchers.IO) {
+
+        val url = URL("https://api.datamuse.com/words?sp=$letterId*")
+        val urlConnection = url.openConnection() as HttpURLConnection
+
+        urlConnection.requestMethod = "GET"
+        val responseCode = urlConnection.responseCode
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            val inputStream = urlConnection.inputStream
+            val response = inputStream.bufferedReader().use { it.readText() }
+            val jsonArray = JSONArray(response)
+
+            (0 until jsonArray.length()).map { jsonArray.getJSONObject(it).getString("word") }
+        } else {
+            Log.e("WordAdapter", "Failed to retrieve words: $responseCode")
+            emptyList()
+        }
     }
 
     class WordViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -107,7 +123,8 @@ class WordAdapter(private val letterId: String, context: Context) :
                 if (intent.resolveActivity(context.packageManager) != null) {
                     context.startActivity(intent)
                 } else {
-                    Toast.makeText(context, "Brak odpowiednich aplikacji", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Brak odpowiednich aplikacji", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 dialog.dismiss()
             }
