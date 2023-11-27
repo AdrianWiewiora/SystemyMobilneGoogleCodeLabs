@@ -1,6 +1,7 @@
 package com.example.spr3.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.spr3.R
 import com.example.spr3.model.Affirmation
+import com.google.android.material.card.MaterialCardView
 
 /**
  * Adapter for the [RecyclerView] in [MainActivity]. Displays [Affirmation] data object.
@@ -19,6 +21,7 @@ class ItemAdapter(
 ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        val cardView: MaterialCardView = view.findViewById(R.id.card_view)
         val textView: TextView = view.findViewById(R.id.item_title)
         val imageView: ImageView = view.findViewById(R.id.item_image)
     }
@@ -41,6 +44,24 @@ class ItemAdapter(
         val item = dataset[position]
         holder.textView.text = context.resources.getString(item.stringResourceId)
         holder.imageView.setImageResource(item.imageResourceId)
+
+        // Obsługa długiego kliknięcia
+        holder.cardView.setOnLongClickListener {
+            shareText(context.getString(item.stringResourceId))
+            true
+        }
+    }
+
+    /**
+     * Metoda do udostepniania tkestu
+     */
+    private fun shareText(text: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
+        context.startActivity(Intent.createChooser(sendIntent, null))
     }
 
     /**
