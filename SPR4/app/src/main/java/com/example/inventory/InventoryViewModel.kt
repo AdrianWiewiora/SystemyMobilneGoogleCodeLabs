@@ -35,6 +35,10 @@ class InventoryViewModel(private val itemDao: ItemDao) : ViewModel() {
     fun isEntryValid(itemName: String, itemPrice: String, itemCount: String): Boolean {
         return !(itemName.isBlank() || itemPrice.isBlank() || itemCount.isBlank())
     }
+
+    fun retrieveItem(id: Int): LiveData<Item> {
+        return itemDao.getItem(id).asLiveData()
+    }
 }
 
 class InventoryViewModelFactory(private val itemDao: ItemDao) : ViewModelProvider.Factory {
