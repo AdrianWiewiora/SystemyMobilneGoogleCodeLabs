@@ -51,6 +51,7 @@ class ItemDetailFragment : Fragment() {
             itemCount.text = item.quantityInStock.toString()
             sellItem.isEnabled = viewModel.isStockAvailable(item)
             sellItem.setOnClickListener { viewModel.sellItem(item) }
+            deleteItem.setOnClickListener { showConfirmationDialog() }
         }
     }
 
@@ -72,9 +73,6 @@ class ItemDetailFragment : Fragment() {
         return binding.root
     }
 
-    /**
-     * Displays an alert dialog to get the user's confirmation before deleting the item.
-     */
     private fun showConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(android.R.string.dialog_alert_title))
@@ -87,10 +85,8 @@ class ItemDetailFragment : Fragment() {
             .show()
     }
 
-    /**
-     * Deletes the current item and navigates to the list fragment.
-     */
     private fun deleteItem() {
+        viewModel.deleteItem(item)
         findNavController().navigateUp()
     }
 
