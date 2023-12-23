@@ -1,7 +1,9 @@
 package com.example.inventory
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.inventory.data.Item
 import com.example.inventory.data.ItemDao
@@ -22,6 +24,8 @@ class InventoryViewModel(private val itemDao: ItemDao) : ViewModel() {
             quantityInStock = itemCount.toInt()
         )
     }
+
+    val allItems: LiveData<List<Item>> = itemDao.getItems().asLiveData()
 
     fun addNewItem(itemName: String, itemPrice: String, itemCount: String) {
         val newItem = getNewItemEntry(itemName, itemPrice, itemCount)
