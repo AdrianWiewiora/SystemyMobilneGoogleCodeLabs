@@ -16,9 +16,7 @@ class ItemListAdapter(private val onItemClicked: (Item) -> Unit) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
             ItemListItemBinding.inflate(
-                LayoutInflater.from(
-                    parent.context
-                )
+                LayoutInflater.from(parent.context)
             )
         )
     }
@@ -46,11 +44,11 @@ class ItemListAdapter(private val onItemClicked: (Item) -> Unit) :
     companion object {
         private val DiffCallback = object : DiffUtil.ItemCallback<Item>() {
             override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem === newItem
+                return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-                return oldItem.itemName == newItem.itemName
+                return oldItem == newItem
             }
         }
     }

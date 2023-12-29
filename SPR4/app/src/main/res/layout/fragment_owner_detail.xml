@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/margin"
+    tools:context=".OwnerDetailFragment">
+
+    <TextView
+        android:id="@+id/owner_first_name"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="FirstName" />
+
+    <TextView
+        android:id="@+id/owner_second_name"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/owner_first_name"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Surname" />
+
+    <TextView
+        android:id="@+id/owner_phone_number_label"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="wrap_content"
+        android:text="@string/phone_number"
+        app:layout_constraintBaseline_toBaselineOf="@+id/owner_phone_number"
+        app:layout_constraintEnd_toStartOf="@+id/owner_phone_number"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/owner_phone_number"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginTop="@dimen/margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/owner_phone_number_label"
+        app:layout_constraintTop_toBottomOf="@+id/owner_first_name"
+        tools:text="123456789" />
+
+    <TextView
+        android:id="@+id/owner_address_label"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="wrap_content"
+        android:text="@string/address"
+        app:layout_constraintBaseline_toBaselineOf="@+id/owner_address"
+        app:layout_constraintEnd_toStartOf="@+id/owner_address"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/owner_address"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginTop="@dimen/margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/owner_address_label"
+        app:layout_constraintTop_toBottomOf="@+id/owner_phone_number_label"
+        tools:text="City" />
+
+    <TextView
+        android:id="@+id/owner_email_label"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="wrap_content"
+        android:text="@string/email"
+        app:layout_constraintBaseline_toBaselineOf="@+id/owner_email"
+        app:layout_constraintEnd_toStartOf="@+id/owner_email"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/owner_email"
+        style="@style/Widget.Inventory.TextView"
+        android:layout_width="0dp"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginTop="@dimen/margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/owner_email_label"
+        app:layout_constraintTop_toBottomOf="@+id/owner_address_label"
+        tools:text="mail@example.com" />
+
+
+    <Button
+        android:id="@+id/delete_owner"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin"
+        android:text="@string/delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/owner_email_label" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/edit_owner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_between_elements"
+        android:layout_marginBottom="@dimen/margin_between_elements"
+        android:contentDescription="@string/edit_item"
+        android:src="@drawable/ic_edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

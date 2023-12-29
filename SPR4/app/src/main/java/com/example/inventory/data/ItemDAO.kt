@@ -25,5 +25,23 @@ interface ItemDao {
 
     @Delete
     suspend fun delete(item: Item)
+
+    @Query("SELECT * FROM item ORDER BY name ASC")
+    suspend fun getItemsSortedByNameAscending(): List<Item>
+
+    @Query("SELECT * FROM item ORDER BY name DESC")
+    suspend fun getItemsSortedByNameDescending(): List<Item>
+
+    @Query("SELECT * FROM item ORDER BY price ASC")
+    suspend fun getItemsSortedByPriceAscending(): List<Item>
+
+    @Query("SELECT * FROM item ORDER BY price DESC")
+    suspend fun getItemsSortedByPriceDescending(): List<Item>
+
+    @Query("SELECT * FROM item ORDER BY quantity ASC")
+    suspend fun getItemsSortedByQuantityAscending(): List<Item>
+
+    @Query("SELECT * FROM item ORDER BY quantity DESC")
+    suspend fun getItemsSortedByQuantityDescending(): List<Item>
 }
 

@@ -2,17 +2,9 @@ package com.example.inventory.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "owner",
-    foreignKeys = [ForeignKey(
-        entity = Item::class,
-        parentColumns = ["id"],
-        childColumns = ["item_id"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
+@Entity(tableName = "owner")
 data class Owner(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
@@ -26,6 +18,4 @@ data class Owner(
     val address: String,
     @ColumnInfo(name = "email")
     val email: String,
-    @ColumnInfo(name = "item_id")
-    val itemId: Int
 )

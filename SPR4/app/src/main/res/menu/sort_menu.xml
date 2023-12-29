@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/sort_az"
+            android:title="A-Z" />
+        <item
+            android:id="@+id/sort_za"
+            android:title="Z-A" />
+        <item
+            android:id="@+id/sort_price_up"
+            android:title="Price - Low to High" />
+        <item
+            android:id="@+id/sort_price_down"
+            android:title="Price - High to Low" />
+        <item
+            android:id="@+id/sort_quantity_up"
+            android:title="Quantity - Low to High" />
+        <item
+            android:id="@+id/sort_quantity_down"
+            android:title="Quantity - High to Low" />
+    </group>
+</menu>

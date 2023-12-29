@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2021 The Android Open Source Project.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.inventory
 
 
@@ -23,12 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.inventory.data.Item
+import com.example.inventory.data.getFormattedDate
 import com.example.inventory.data.getFormattedPrice
 import com.example.inventory.databinding.FragmentItemDetailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ItemDetailFragment : Fragment() {
     private val navigationArgs: ItemDetailFragmentArgs by navArgs()
@@ -40,7 +29,8 @@ class ItemDetailFragment : Fragment() {
 
     private val viewModel: InventoryViewModel by activityViewModels {
         InventoryViewModelFactory(
-            (activity?.application as InventoryApplication).database.itemDao()
+            (activity?.application as InventoryApplication).database.itemDao(),
+            (activity?.application as InventoryApplication).database.ownerDao()
         )
     }
 
@@ -82,14 +72,25 @@ class ItemDetailFragment : Fragment() {
     }
 
     private fun bind(item: Item) {
-        binding.apply {
-            itemName.text = item.itemName
-            itemPrice.text = item.getFormattedPrice()
-            itemCount.text = item.quantityInStock.toString()
-            sellItem.isEnabled = viewModel.isStockAvailable(item)
-            sellItem.setOnClickListener { viewModel.sellItem(item) }
-            deleteItem.setOnClickListener { showConfirmationDialog() }
-            editItem.setOnClickListener { editItem() }
+        lifecycleScope.launch(Dispatchers.IO) {
+            val ownerName = viewModel.getOwnerNameById(item.ownerId)
+            withContext(Dispatchers.Main) {
+                binding.apply {
+                    itemName.text = item.itemName
+                    itemPrice.text = item.getFormattedPrice()
+                    itemCount.text = item.quantityInStock.toString()
+                    itemCategory.text = item.category
+                    itemPurchaseDate.text = item.getFormattedDate()
+                    itemColor.text = item.color
+                    itemLocation.text = item.location
+                    itemPurchaseLocation.text = item.purchaseLocation
+                    itemOwner.text = ownerName ?: "Unknown Owner"
+                    sellItem.isEnabled = viewModel.isStockAvailable(item)
+                    sellItem.setOnClickListener { viewModel.sellItem(item) }
+                    deleteItem.setOnClickListener { showConfirmationDialog() }
+                    editItem.setOnClickListener { editItem() }
+                }
+            }
         }
     }
     private fun editItem() {

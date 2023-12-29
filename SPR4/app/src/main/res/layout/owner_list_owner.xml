@@ -9,41 +9,28 @@
     android:descendantFocusability="blocksDescendants">
 
     <TextView
-        android:id="@+id/item_name"
+        android:id="@+id/owner_first_name"
         style="@style/Widget.Inventory.ListItemTextView"
         android:layout_width="180dp"
         android:layout_marginStart="15dp"
         android:fontFamily="sans-serif"
-        app:layout_constraintEnd_toStartOf="@+id/item_price"
+        app:layout_constraintEnd_toStartOf="@+id/owner_last_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Cogs and Widgets" />
+        tools:text="Firstname" />
 
     <TextView
-        android:id="@+id/item_price"
+        android:id="@+id/owner_last_name"
         style="@style/Widget.Inventory.ListItemTextView"
         android:layout_width="100dp"
-        android:layout_below="@+id/item_name"
+        android:layout_below="@+id/owner_first_name"
         android:layout_marginStart="@dimen/margin_between_elements"
         android:fontFamily="sans-serif-medium"
         android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/item_quantity"
         app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toEndOf="@+id/item_name"
+        app:layout_constraintStart_toEndOf="@+id/owner_first_name"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="$4.99" />
+        tools:text="Surname" />
 
-    <TextView
-        android:id="@+id/item_quantity"
-        style="@style/Widget.Inventory.ListItemTextView"
-        android:layout_width="80dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:fontFamily="sans-serif-medium"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
