@@ -37,6 +37,9 @@ import com.example.inventory.data.Owner
 import com.example.inventory.databinding.FragmentAddItemBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.text.NumberFormat
+import java.text.ParseException
 import java.util.Date
 
 class AddItemFragment : Fragment() {
@@ -123,26 +126,47 @@ class AddItemFragment : Fragment() {
 
     private fun updateItem() {
         if (isEntryValid()) {
-            val selectedOwner = ownerSpinner.selectedItem as Owner
-            val ownerId = selectedOwner.id
+            val selectedOwnerPosition: Int = ownerSpinner.selectedItemPosition
+            if (selectedOwnerPosition != AdapterView.INVALID_POSITION) {
+                val selectedOwnerName: String = ownerSpinner.adapter.getItem(selectedOwnerPosition).toString()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val ownerId = viewModel.getOwnerIdByName(selectedOwnerName)
 
-            viewModel.updateItem(
-                this.navigationArgs.itemId,
-                this.binding.itemName.text.toString(),
-                this.binding.itemPrice.text.toString(),
-                this.binding.itemCount.text.toString(),
-                this.binding.itemCategory.text.toString(),
-                Date(),
-                this.binding.itemColor.text.toString(),
-                this.binding.itemLocation.text.toString(),
-                this.binding.itemPurchaseLocation.text.toString(),
-                ownerId.toLong()
-            )
+                    try {
+                        val price = NumberFormat.getInstance().parse(binding.itemPrice.text.toString())?.toDouble()
+                        val count = NumberFormat.getInstance().parse(binding.itemCount.text.toString())?.toInt()
 
-            val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
-            findNavController().navigate(action)
+                        if (price != null && count != null) {
+                            viewModel.updateItem(
+                                this@AddItemFragment.navigationArgs.itemId,
+                                binding.itemName.text.toString(),
+                                price.toString(),
+                                count.toString(),
+                                binding.itemCategory.text.toString(),
+                                Date(),
+                                binding.itemColor.text.toString(),
+                                binding.itemLocation.text.toString(),
+                                binding.itemPurchaseLocation.text.toString(),
+                                ownerId.toLong()
+                            )
+
+                            showToast("Item updated successfully")
+                            val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
+                            findNavController().navigate(action)
+                        } else {
+                            showToast("Invalid price or count format")
+                        }
+                    } catch (e: ParseException) {
+                        showToast("Invalid price or count format")
+                    }
+                }
+            } else {
+                showToast("Please select an owner")
+            }
         }
     }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

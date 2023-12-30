@@ -41,7 +41,6 @@ class OwnerListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
         viewModel.allOwners.observe(this.viewLifecycleOwner) { owners ->
             owners?.let {
-                Log.d("AddItemFragmentOwnerF", "Owners: $it")
                 adapter.submitList(it)
             }
         }

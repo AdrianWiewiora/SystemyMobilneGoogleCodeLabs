@@ -21,7 +21,6 @@ class OwnerListAdapter(private val onOwnerClicked: (Owner) -> Unit):
     override fun onBindViewHolder(holder: OwnerListAdapter.OwnerViewHolder, position: Int) {
         val current = getItem(position)
         holder.itemView.setOnClickListener {
-            Log.d("AddItemFragmentAdapter", "Binding owner: $current")
             onOwnerClicked(current)
         }
         holder.bind(current)
