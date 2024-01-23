@@ -15,6 +15,7 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -60,10 +61,14 @@ class MarsViewModel(private val marsPhotosRepository: MarsPhotosRepository) : Vi
         viewModelScope.launch {
             marsUiState = MarsUiState.Loading
             marsUiState = try {
-                MarsUiState.Success(marsPhotosRepository.getMarsPhotos())
+                val photos = marsPhotosRepository.getMarsPhotos()
+                Log.d("MarsViewModel", "Successfully loaded ${photos.size} photos.")
+                MarsUiState.Success(photos)
             } catch (e: IOException) {
+                Log.e("MarsViewModel", "IOException: ${e.message}", e)
                 MarsUiState.Error
             } catch (e: HttpException) {
+                Log.e("MarsViewModel", "HttpException: ${e.message}", e)
                 MarsUiState.Error
             }
         }

@@ -15,7 +15,9 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +35,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,21 +45,33 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import coil.request.ErrorResult
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.example.marsphotos.R
 import com.example.marsphotos.model.MarsPhoto
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
 
 @Composable
 fun HomeScreen(
-    marsUiState: MarsUiState,
-    modifier: Modifier = Modifier
-) {
+    marsUiState: MarsUiState, retryAction: () -> Unit, modifier: Modifier = Modifier,
+){
+    val selectedPhoto = remember { mutableStateOf<MarsPhoto?>(null) }
+    val showDialog = remember { mutableStateOf(false) }
+
     when (marsUiState) {
         is MarsUiState.Loading -> LoadingScreen(modifier = modifier)
-        is MarsUiState.Success -> PhotosGridScreen(marsUiState.photos, modifier)
-        else -> ErrorScreen(modifier = modifier)
+        is MarsUiState.Success -> {
+            PhotosGridScreen(marsUiState.photos, modifier) { photo ->
+                selectedPhoto.value = photo; showDialog.value = true
+            }
+            PhotoDetailDialog(selectedPhoto.value ?: MarsPhoto("", "", 0, ""), showDialog.value) {
+                showDialog.value = false
+            }
+        }
+        is MarsUiState.Error -> ErrorScreen(retryAction, modifier = modifier.fillMaxSize())
     }
 }
 
@@ -75,7 +91,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
  * The home screen displaying error message with re-attempt button.
  */
 @Composable
-fun ErrorScreen(modifier: Modifier = Modifier) {
+fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -85,6 +101,9 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
             painter = painterResource(id = R.drawable.ic_connection_error), contentDescription = ""
         )
         Text(text = stringResource(R.string.loading_failed), modifier = Modifier.padding(16.dp))
+        Button(onClick = retryAction) {
+            Text(stringResource(R.string.retry))
+        }
     }
 }
 
@@ -113,7 +132,7 @@ fun LoadingScreenPreview() {
 @Composable
 fun ErrorScreenPreview() {
     MarsPhotosTheme {
-        ErrorScreen()
+        ErrorScreen({})
     }
 }
 
@@ -121,21 +140,34 @@ fun ErrorScreenPreview() {
 @Composable
 fun PhotosGridScreenPreview() {
     MarsPhotosTheme {
-        val mockData = List(10) { MarsPhoto("$it", "") }
+        val mockData = List(10) { MarsPhoto("$it", "",0, "") }
         PhotosGridScreen(mockData)
     }
 }
 
+
 @Composable
-fun MarsPhotoCard(photo: MarsPhoto, modifier: Modifier = Modifier) {
+fun MarsPhotoCard(photo: MarsPhoto, modifier: Modifier = Modifier, onClick: (MarsPhoto) -> Unit) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .clickable { onClick(photo) }
+            .padding(4.dp)
+            .fillMaxWidth()
+            .aspectRatio(1.5f),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
+        val listener = object : ImageRequest.Listener {
+            override fun onError(request: ImageRequest, result: ErrorResult) {
+                Log.e("ImageLoadError", "Failed to load image", result.throwable)
+            }
+        }
+        val secureImgSrc = photo.imgSrc.replace("http://", "https://")
+
         AsyncImage(
-            model = ImageRequest.Builder(context = LocalContext.current)
-                .data(photo.imgSrc)
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(secureImgSrc)
                 .crossfade(true)
+                .listener(listener)
                 .build(),
             error = painterResource(R.drawable.ic_broken_image),
             placeholder = painterResource(R.drawable.loading_img),
@@ -146,7 +178,7 @@ fun MarsPhotoCard(photo: MarsPhoto, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PhotosGridScreen(photos: List<MarsPhoto>, modifier: Modifier = Modifier) {
+fun PhotosGridScreen(photos: List<MarsPhoto>, modifier: Modifier = Modifier, onPhotoSelected: (MarsPhoto) -> Unit = {}) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = modifier.fillMaxWidth(),
@@ -155,11 +187,21 @@ fun PhotosGridScreen(photos: List<MarsPhoto>, modifier: Modifier = Modifier) {
         items(items = photos, key = { photo -> photo.id }) { photo ->
             MarsPhotoCard(
                 photo,
-                modifier = modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1.5f)
+                modifier = modifier,
+                onClick = onPhotoSelected
             )
+        }
+    }
+}
+
+@Composable
+fun PhotoDetailDialog(photo: MarsPhoto, showDialog: Boolean, onClose: () -> Unit) {
+    if (showDialog) {
+        Dialog(onDismissRequest = onClose) {
+            Column {
+                Text(text = "Price: ${photo.price}")
+                Text(text = "Type: ${photo.type}")
+            }
         }
     }
 }
